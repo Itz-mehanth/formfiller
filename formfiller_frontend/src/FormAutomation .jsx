@@ -32,7 +32,7 @@ const FormAutomation = () => {
     setIsLoading(true);
     setQuestions([]);
     try {
-      const response = await fetch('http://localhost:5000/analyze-form', {
+      const response = await fetch('https://formfiller-mykv.onrender.com/analyze-form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ form_url: formUrl }),
@@ -52,7 +52,7 @@ const FormAutomation = () => {
   const pollAutomationStatus = useCallback(() => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await fetch('http://localhost:5000/automation-status');
+        const response = await fetch('https://formfiller-mykv.onrender.com/automation-status');
         const data = await response.json();
         setAutomationStatus(data);
         if (['completed', 'stopped', 'error'].includes(data.status)) {
@@ -86,7 +86,7 @@ const FormAutomation = () => {
     setIsLoading(true);
     setAutomationStatus({ status: 'running', message: 'Initializing automation...' });
     try {
-      const response = await fetch('http://localhost:5000/start-automation', {
+      const response = await fetch('https://formfiller-mykv.onrender.com/start-automation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ form_url: formUrl, questions, settings: automationSettings }),
@@ -107,7 +107,7 @@ const FormAutomation = () => {
   const handleStopAutomation = async () => {
     setAutomationStatus(prev => ({ ...prev, message: 'Sending stop signal...' }));
     try {
-      await fetch('http://localhost:5000/stop-automation', { method: 'POST' });
+      await fetch('https://formfiller-mykv.onrender.com/stop-automation', { method: 'POST' });
     } catch (error) {
       setAutomationStatus({ status: 'error', message: 'Error sending stop signal: ' + error.message });
     }
