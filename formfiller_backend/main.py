@@ -261,5 +261,4 @@ def health_check():
 
 if __name__ == '__main__':
     print("🚀 Google Forms Automation Server Starting...")
-    print("📡 Server will run on http://localhost:5000")
     app.run(host='0.0.0.0', port=5000)
