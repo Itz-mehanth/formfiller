@@ -9,11 +9,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 
 # --- Stage 2: Install Google Chrome, ChromeDriver, and System Dependencies ---
-# We need wget and unzip to download and install ChromeDriver.
+# We need wget, unzip, and jq to download and process the ChromeDriver version.
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
+    jq \
     --no-install-recommends
 
 # Add Google's official repository for Chrome.
@@ -28,8 +29,8 @@ RUN apt-get update && apt-get install -y \
 # Download and install the correct version of ChromeDriver.
 # This version matches the stable Chrome version installed above.
 RUN CHROME_VERSION=$(google-chrome --version | cut -f 3 -d ' ' | cut -d '.' -f 1-3) && \
-    CHROMEDRIVER_VERSION=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | jq -r ".channels.Stable.downloads.chromedriver[] | select(.platform==\"linux64\") | .url") && \
-    wget -O /tmp/chromedriver.zip ${CHROMEDRIVER_VERSION} && \
+    CHROMEDRIVER_URL=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | jq -r ".channels.Stable.downloads.chromedriver[] | select(.platform==\"linux64\") | .url") && \
+    wget -O /tmp/chromedriver.zip ${CHROMEDRIVER_URL} && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
     chmod +x /usr/local/bin/chromedriver && \
